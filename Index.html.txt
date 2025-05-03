@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Aderli!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+    .balloon {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-pink-300 via-yellow-200 to-blue-300 min-h-screen flex flex-col justify-center items-center text-center p-6 relative overflow-hidden">
+
+  <canvas id="fireworks"></canvas>
+
+  <h1 class="text-5xl md:text-7xl font-extrabold text-white drop-shadow-lg animate-bounce z-10">Happy Birthday Aderli!</h1>
+  
+  <p class="mt-4 text-lg md:text-2xl text-white font-semibold z-10">Wishing you joy, love, and all your heart desires!</p>
+
+  <div class="mt-10 flex space-x-6 z-10">
+    <div class="w-20 h-28 bg-red-400 rounded-full balloon shadow-lg"></div>
+    <div class="w-20 h-28 bg-yellow-300 rounded-full balloon shadow-lg delay-200"></div>
+    <div class="w-20 h-28 bg-blue-400 rounded-full balloon shadow-lg delay-400"></div>
+  </div>
+
+  <p class="mt-12 text-white italic z-10">This page was made just for you!</p>
+
+  <script>
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createFirework() {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height / 2;
+      const colors = ['#ff4d4d', '#ffcc00', '#66ccff', '#cc66ff', '#33cc33'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x, y,
+          angle: Math.random() * 2 * Math.PI,
+          speed: Math.random() * 5 + 2,
+          radius: 2,
+          life: 100,
+          color
+        });
+      }
+    }
+
+    function updateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, i) => {
+        const vx = Math.cos(p.angle) * p.speed;
+        const vy = Math.sin(p.angle) * p.speed;
+        p.x += vx;
+        p.y += vy;
+        p.life -= 1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if (p.life <= 0) particles.splice(i, 1);
+      });
+    }
+
+    function animate() {
+      updateParticles();
+      requestAnimationFrame(animate);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    setInterval(createFirework, 1000);
+    animate();
+  </script>
+</body>
+</html>
